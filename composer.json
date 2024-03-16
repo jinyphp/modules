@@ -1,0 +1,43 @@
+{
+    "name": "jiny/modules",
+    "description": "jiny Module Manager for laravel",
+    "keywords": [
+        "jiny", "jinyphp", "jinyerp",
+        "framwork", "laravel", "modules"
+    ],
+    "homepage": "http://www.jinyerp.com",
+    "type": "library",
+    "authors": [
+        {
+            "name": "hojinlee",
+            "email": "infohojin@gmail.com",
+            "homepage": "http://www.jinyphp.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "php": "^7.3|^8.0",
+        "nwidart/laravel-modules": "^8.3",
+        "livewire/livewire": "^2.7"
+    },
+    "autoload": {
+        "psr-4": {
+            "Jiny\\Modules\\":"src/"
+        },
+        "files" : [
+            "src/Helpers/Helper.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Jiny\\Modules\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Jiny\\Modules\\JinyModulesServiceProvider"
+            ]
+        }
+    }
+}
