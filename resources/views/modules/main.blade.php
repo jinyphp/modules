@@ -6,16 +6,14 @@
         @endif --}}
         <!-- end -->
 
-        <div class="relative">
-            <div class="absolute right-0 bottom-4">
-                <div class="btn-group">
-                    <x-button id="btn-livepopup-manual" secondary wire:click="$emit('popupManualOpen')">메뉴얼</x-button>
-                    <a href="/_admin/modules/store" class="btn btn-success">스토어</a>
-                    <x-button id="btn-livepopup-create" primary wire:click="$emit('popupFormOpen')">
-                        등록
-                    </x-button>
-                </div>
-            </div>
+
+
+        <div class="btn-group mb-3">
+            <button id="btn-livepopup-manual" class="btn btn-secondary" wire:click="$emit('popupManualOpen')">메뉴얼</button>
+            <a href="/_admin/modules/store" class="btn btn-success">스토어</a>
+            <button id="btn-livepopup-create" class="btn btn-primary" wire:click="$emit('popupFormOpen')">
+                등록
+            </button>
         </div>
 
 
@@ -33,8 +31,9 @@
         </script>
         @endpush
 
-        <!-- 목록 출력 -->
+        <!-- 모듈 목록 -->
         @livewire('ModuleList', ['actions'=>$actions])
+
 
         @livewire('WirePopupForm', ['actions'=>$actions])
 
