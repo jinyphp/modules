@@ -3,8 +3,10 @@
 use Illuminate\Support\Facades\DB;
 use Nwidart\Modules\Facades\Module;
 
+
 if(!function_exists("is_module")) {
     function is_module($code) {
+        // 대소문자 구분
         return isModule($code);
     }
 }
