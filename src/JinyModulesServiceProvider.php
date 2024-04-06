@@ -30,8 +30,6 @@ class JinyModulesServiceProvider extends ServiceProvider
         ], 'actions');
 
 
-
-
         // artisan 명령등록
         if ($this->app->runningInConsole()) {
             $this->commands([
@@ -44,7 +42,6 @@ class JinyModulesServiceProvider extends ServiceProvider
 
     public function register()
     {
-
 
         /* 라이브와이어 컴포넌트 등록 */
         $this->app->afterResolving(BladeCompiler::class, function () {
