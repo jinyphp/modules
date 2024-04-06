@@ -42,7 +42,7 @@
         }
     },
     "scripts": {
-        "post-install-cmd": [
+        "post-create-project-cmd": [
             "mkdir -p modules"
         ]
     }
