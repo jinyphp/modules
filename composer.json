@@ -21,7 +21,9 @@
     },
     "autoload": {
         "psr-4": {
-            "Jiny\\Modules\\":"src/"
+            "Jiny\\Modules\\":"src/",
+            "Modules\\": "/../../../modules/"
+
         },
         "files" : [
             "src/Helpers/Helper.php"
@@ -38,5 +40,10 @@
                 "Jiny\\Modules\\JinyModulesServiceProvider"
             ]
         }
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "mkdir -p modules"
+        ]
     }
 }
