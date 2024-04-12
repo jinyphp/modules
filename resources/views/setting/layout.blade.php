@@ -10,7 +10,9 @@
         @livewire('WireConfigPHP', ['actions'=>$actions])
 
         {{-- SuperAdmin Actions Setting --}}
-        @livewire('setActionRule', ['actions'=>$actions])
+        @if(Module::has('Actions'))
+            @livewire('setActionRule', ['actions'=>$actions])
+        @endif
 
     </x-theme-layout>
 </x-theme>

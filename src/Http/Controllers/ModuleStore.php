@@ -11,11 +11,11 @@ use Nwidart\Modules\Facades\Module;
 use CzProject\GitPhp\Git;
 use GuzzleHttp\Client;
 
-use Jiny\Table\Http\Controllers\ResourceController;
-class ModuleStore extends ResourceController
+use Jiny\Admin\Http\Controllers\AdminController;
+class ModuleStore extends AdminController
 {
     use \Jiny\WireTable\Http\Trait\Permit;
-    use \Jiny\Table\Http\Controllers\SetMenu;
+    //use \Jiny\Table\Http\Controllers\SetMenu;
 
     public function __construct()
     {

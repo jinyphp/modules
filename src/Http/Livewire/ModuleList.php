@@ -26,6 +26,8 @@ class ModuleList extends Component
 
     public function render()
     {
+
+
         $modulePath = base_path('/modules');
         $filename = "modules_statuses.json";
         $path = base_path().DIRECTORY_SEPARATOR.$filename;
@@ -77,6 +79,8 @@ class ModuleList extends Component
             $this->modules[$key]->ext = null;
             $this->modules[$key]->code = null;
         }
+
+
 
         return view("modules::modules.list");
     }

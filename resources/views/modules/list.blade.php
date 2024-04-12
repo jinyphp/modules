@@ -1,4 +1,3 @@
-
 @if(count($modules)>0)
     <div class="row">
     @foreach ($modules as $item)

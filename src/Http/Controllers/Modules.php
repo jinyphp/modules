@@ -12,19 +12,21 @@ use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
 use Nwidart\Modules\Facades\Module;
 use CzProject\GitPhp\Git;
 
-use Jiny\Table\Http\Controllers\ResourceController;
-class Modules extends ResourceController
+use Jiny\Admin\Http\Controllers\AdminController;
+class Modules extends AdminController
 {
     use \Jiny\WireTable\Http\Trait\Permit;
-    use \Jiny\Table\Http\Controllers\SetMenu;
+    //use \Jiny\Table\Http\Controllers\SetMenu;
 
     public function __construct()
     {
         parent::__construct();  // setting Rule 초기화
         $this->setVisit($this); // Livewire와 양방향 의존성 주입
 
+        /*
         $this->actions['table'] = "jiny_modules"; // 테이블 정보
         $this->actions['paging'] = 100; // 페이지 기본값
+        */
 
         $this->actions['view']['main'] = "modules::modules.main";
         $this->actions['view']['main_layout'] = "modules::modules.main_layout";
@@ -37,12 +39,15 @@ class Modules extends ResourceController
         $this->actions['title'] = "모듈목록";
         $this->actions['subtitle'] = "설치된 모듈목록 입니다.";
 
+
+
     }
 
 
 
     public function hookIndexed($wire, $rows)
     {
+
         // 저장소에서 tag 명령을 통하여 최종 버젼을 확인
         $path = base_path('modules').DIRECTORY_SEPARATOR;
 
@@ -69,6 +74,7 @@ class Modules extends ResourceController
 
 
         }
+
 
 
         return $rows;
