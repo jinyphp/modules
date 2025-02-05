@@ -24,7 +24,7 @@ class Modules extends AdminController
         $this->setVisit($this); // Livewire와 양방향 의존성 주입
 
         /*
-        $this->actions['table'] = "jiny_modules"; // 테이블 정보
+        $this->actions['table']['name'] = "jiny_modules"; // 테이블 정보
         $this->actions['paging'] = 100; // 페이지 기본값
         */
 

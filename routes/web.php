@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 // 모듈에서 설정되 접속 prefix값을 읽어 옵니다.
 if(function_exists("admin_prefix")) {
     $prefix = admin_prefix();
- 
+
     Route::middleware(['web','auth:sanctum', 'verified'])
     ->name('admin.')
     ->prefix($prefix)->group(function () {
@@ -30,3 +30,21 @@ if(function_exists("admin_prefix")) {
 }
 
 
+/**
+ * 모듈 라이센스 구매
+ */
+
+ Route::middleware(['web','auth:sanctum', 'verified'])
+ ->name('site.')
+ ->prefix('/')->group(function () {
+    Route::get('modules',[
+        \Jiny\Modules\Http\Controllers\SiteModules::class,
+        "index"
+    ]);
+
+    Route::get('modules/detail/{code}',[
+        \Jiny\Modules\Http\Controllers\SiteModulesDetail::class,
+        "index"
+    ]);
+
+ });

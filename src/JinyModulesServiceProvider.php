@@ -9,7 +9,7 @@ use Livewire\Livewire;
 
 class JinyModulesServiceProvider extends ServiceProvider
 {
-    private $package = "modules";
+    private $package = "jiny-modules";
     public function boot()
     {
         // 모듈: 라우트 설정
@@ -49,6 +49,10 @@ class JinyModulesServiceProvider extends ServiceProvider
             Livewire::component('ModuleList', \Jiny\Modules\Http\Livewire\ModuleList::class);
             Livewire::component('ModuleStore', \Jiny\Modules\Http\Livewire\ModuleStore::class);
             Livewire::component('ModuleStoreInstall', \Jiny\Modules\Http\Livewire\ModuleStoreInstall::class);
+
+
+            Livewire::component('jiny-license-store-detail',
+                \Jiny\Modules\Http\Livewire\LicenseStoreDetail::class);
         });
 
 
