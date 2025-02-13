@@ -2,8 +2,9 @@
     "name": "jiny/modules",
     "description": "jiny Module Manager for laravel",
     "keywords": [
-        "jiny", "jinyphp", "jinyerp",
-        "framwork", "laravel", "modules"
+        "jiny", 
+        "jinyphp", 
+        "jinyerp"
     ],
     "homepage": "http://www.jinyerp.com",
     "type": "library",
@@ -16,21 +17,21 @@
     ],
     "minimum-stability": "stable",
     "require": {
-        "php": "^8.1"
+        "php": "^8.2"
     },
     "autoload": {
         "psr-4": {
-            "Jiny\\Modules\\":"src/",
+            "Jiny\\Modules\\":"/",
+            "Jiny\\":"/../../../jiny/",
             "Modules\\": "/../../../modules/"
-
         },
         "files" : [
-            "src/Helpers/Helper.php"
+            "Helpers/Helper.php"
         ]
     },
     "autoload-dev": {
         "psr-4": {
-            "Jiny\\Modules\\Tests\\": "tests/"
+            "Jiny\\Tests\\": "tests/"
         }
     },
     "extra": {

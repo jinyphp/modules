@@ -1,5 +1,4 @@
 <?php
-
 namespace Jiny\Modules;
 
 use Illuminate\Support\ServiceProvider;
@@ -13,20 +12,20 @@ class JinyModulesServiceProvider extends ServiceProvider
     public function boot()
     {
         // 모듈: 라우트 설정
-        $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
-        $this->loadViewsFrom(__DIR__.'/../resources/views', $this->package);
+        $this->loadRoutesFrom(__DIR__.'/routes/web.php');
+        $this->loadViewsFrom(__DIR__.'/resources/views', $this->package);
 
         // 데이터베이스
-        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+        $this->loadMigrationsFrom(__DIR__.'/database/migrations');
 
         $this->publishes([
-            __DIR__.'/../config/config.php' => config_path('modules.php'),
+            __DIR__.'/config/config.php' => config_path('modules.php'),
         ]);
 
         //actions
         // php artisan vendor:publish --tag=actions
         $this->publishes([
-            __DIR__.'/../resources/actions' => resource_path('actions'),
+            __DIR__.'/resources/actions' => resource_path('actions'),
         ], 'actions');
 
 
@@ -50,12 +49,9 @@ class JinyModulesServiceProvider extends ServiceProvider
             Livewire::component('ModuleStore', \Jiny\Modules\Http\Livewire\ModuleStore::class);
             Livewire::component('ModuleStoreInstall', \Jiny\Modules\Http\Livewire\ModuleStoreInstall::class);
 
-
             Livewire::component('jiny-license-store-detail',
                 \Jiny\Modules\Http\Livewire\LicenseStoreDetail::class);
         });
-
-
 
     }
 

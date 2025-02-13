@@ -1,4 +1,4 @@
-# Jiny Module Management for laravel
+# Jiny Modules
 `지니모듈`은 `nWidart/laravel-modules`의 확장 패키지로서 라라벨 프레임워크에서 패키지 형태의 
 모듈을 생성하고 관리하는 도구 모음 입니다.
 

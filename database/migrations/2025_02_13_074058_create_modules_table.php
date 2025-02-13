@@ -1,10 +1,9 @@
 <?php
-
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateJinyModulesTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +12,7 @@ class CreateJinyModulesTable extends Migration
      */
     public function up()
     {
-        Schema::create('jiny_modules', function (Blueprint $table) {
+        Schema::create('modules', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
             $table->string('enable')->default(1);
@@ -28,10 +27,11 @@ class CreateJinyModulesTable extends Migration
             $table->string('version')->nullable();
             $table->string('installed')->nullable();
 
-            $table->string('description')->nullable();
+            $table->text('description')->nullable();
 
-            // 작업자ID
-            $table->unsignedBigInteger('user_id')->default(0);
+            // 관리자자
+            $table->string('admin')->nullable();
+            $table->unsignedBigInteger('admin_id')->default(0);
         });
     }
 
@@ -42,6 +42,6 @@ class CreateJinyModulesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('jiny_modules');
+        Schema::dropIfExists('modules');
     }
-}
+};
