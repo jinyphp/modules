@@ -1,58 +1,146 @@
 <?php
+
 namespace Jiny\Modules;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Blade;
-use Illuminate\View\Compilers\BladeCompiler;
-use Livewire\Livewire;
 
 class JinyModulesServiceProvider extends ServiceProvider
 {
-    private $package = "jiny-modules";
-    public function boot()
+    /**
+     * Register services.
+     */
+    public function register(): void
     {
-        // 모듈: 라우트 설정
-        $this->loadRoutesFrom(__DIR__.'/routes/web.php');
-        $this->loadViewsFrom(__DIR__.'/resources/views', $this->package);
+        // 모듈 자동 로드 등록
+        $this->registerModuleAutoLoader();
+    }
 
-        // 데이터베이스
-        $this->loadMigrationsFrom(__DIR__.'/database/migrations');
+    /**
+     * Bootstrap services.
+     */
+    public function boot(): void
+    {
+        // 뷰 네임스페이스 등록
+        $this->loadViewsFrom(__DIR__ . '/resources/views', 'jiny-modules');
 
-        $this->publishes([
-            __DIR__.'/config/config.php' => config_path('modules.php'),
-        ]);
+        // 라우트 등록
+        $this->loadRoutes();
 
-        //actions
-        // php artisan vendor:publish --tag=actions
-        $this->publishes([
-            __DIR__.'/resources/actions' => resource_path('actions'),
-        ], 'actions');
+        // 명령어 등록
+        $this->registerCommands();
+    }
 
+    /**
+     * 모듈 자동 로더를 등록합니다.
+     */
+    private function registerModuleAutoLoader(): void
+    {
+        $modulesPath = base_path('modules');
 
-        // artisan 명령등록
-        if ($this->app->runningInConsole()) {
-            $this->commands([
-                \Jiny\Modules\Console\Commands\ModuleInit::class,
-                \Jiny\Modules\Console\Commands\ModuleGetUrl::class,
-                \Jiny\Modules\Console\Commands\ModuleRemove::class
-            ]);
+        if (!file_exists($modulesPath)) {
+            return;
+        }
+
+        $vendorDirs = glob($modulesPath . '/*', GLOB_ONLYDIR);
+
+        foreach ($vendorDirs as $vendorDir) {
+            $vendorName = basename($vendorDir);
+            $packageDirs = glob($vendorDir . '/*', GLOB_ONLYDIR);
+
+            foreach ($packageDirs as $packageDir) {
+                $packageName = basename($packageDir);
+                $serviceProviderPath = $this->findServiceProvider($packageDir, $vendorName, $packageName);
+
+                if ($serviceProviderPath) {
+                    $this->registerModuleServiceProvider($serviceProviderPath, $vendorName, $packageName);
+                }
+            }
         }
     }
 
-    public function register()
+    /**
+     * 패키지 디렉토리에서 ServiceProvider를 찾습니다.
+     */
+    private function findServiceProvider(string $packageDir, string $vendorName, string $packageName): ?string
     {
+        $patterns = [
+            $vendorName . ucfirst($packageName) . 'ServiceProvider.php',
+            ucfirst($packageName) . 'ServiceProvider.php',
+            $vendorName . 'ServiceProvider.php',
+            'ServiceProvider.php'
+        ];
 
-        /* 라이브와이어 컴포넌트 등록 */
-        $this->app->afterResolving(BladeCompiler::class, function () {
-            Livewire::component('ModuleInstall', \Jiny\Modules\Http\Livewire\ModuleInstall::class);
-            Livewire::component('ModuleList', \Jiny\Modules\Http\Livewire\ModuleList::class);
-            Livewire::component('ModuleStore', \Jiny\Modules\Http\Livewire\ModuleStore::class);
-            Livewire::component('ModuleStoreInstall', \Jiny\Modules\Http\Livewire\ModuleStoreInstall::class);
+        foreach ($patterns as $pattern) {
+            $filePath = $packageDir . '/' . $pattern;
+            if (file_exists($filePath)) {
+                return $filePath;
+            }
+        }
 
-            Livewire::component('jiny-license-store-detail',
-                \Jiny\Modules\Http\Livewire\LicenseStoreDetail::class);
-        });
+        $phpFiles = glob($packageDir . '/*.php');
+        foreach ($phpFiles as $file) {
+            $content = file_get_contents($file);
+            if (str_contains($content, 'extends ServiceProvider') ||
+                str_contains($content, 'extends \Illuminate\Support\ServiceProvider')) {
+                return $file;
+            }
+        }
 
+        return null;
     }
 
+    /**
+     * 모듈 ServiceProvider를 등록합니다.
+     */
+    private function registerModuleServiceProvider(string $serviceProviderPath, string $vendorName, string $packageName): void
+    {
+        $className = pathinfo($serviceProviderPath, PATHINFO_FILENAME);
+        $namespace = $this->generateNamespace($vendorName, $packageName);
+        $fullClassName = $namespace . '\\' . $className;
+
+        if (class_exists($fullClassName)) {
+            $this->app->register($fullClassName);
+        }
+    }
+
+    /**
+     * 네임스페이스를 생성합니다.
+     */
+    private function generateNamespace(string $vendorName, string $packageName): string
+    {
+        return ucfirst($vendorName) . '\\' . ucfirst($packageName);
+    }
+
+    /**
+     * 라우트를 로드합니다.
+     */
+    private function loadRoutes(): void
+    {
+        Route::middleware(['web', 'auth', 'admin'])
+            ->prefix('admin/modules')
+            ->name('admin.modules.')
+            ->group(function () {
+                Route::get('/', [\Jiny\Modules\Http\Controllers\ModuleController::class, 'index'])->name('index');
+                Route::get('/{vendor}/{package}', [\Jiny\Modules\Http\Controllers\ModuleController::class, 'show'])->name('show');
+                Route::post('/{vendor}/{package}/toggle', [\Jiny\Modules\Http\Controllers\ModuleController::class, 'toggle'])->name('toggle');
+            });
+    }
+
+    /**
+     * 명령어를 등록합니다.
+     */
+    private function registerCommands(): void
+    {
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                \Jiny\Modules\Console\Commands\ModuleListCommand::class,
+                \Jiny\Modules\Console\Commands\ModuleCreateCommand::class,
+                \Jiny\Modules\Console\Commands\ModuleInfoCommand::class,
+                \Jiny\Modules\Console\Commands\ModuleMakeCommand::class,
+                \Jiny\Modules\Console\Commands\ModuleRemove::class,
+            ]);
+        }
+    }
 }

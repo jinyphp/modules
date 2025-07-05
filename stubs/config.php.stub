@@ -1,0 +1,6 @@
+<?php
+
+return [
+    // 설정 예시
+    'option' => true,
+];

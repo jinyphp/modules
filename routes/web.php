@@ -3,6 +3,19 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 
+// 모듈 관리 라우트
+Route::middleware(['web','auth:sanctum', 'verified'])
+    ->name('admin.')
+    ->prefix('admin')->group(function () {
+        Route::get('modules', [\Jiny\Modules\Http\Controllers\ModuleController::class, 'index'])
+            ->name('modules.index');
+        Route::get('modules/{vendor}/{package}', [\Jiny\Modules\Http\Controllers\ModuleController::class, 'show'])
+            ->name('modules.show');
+        Route::post('modules/{vendor}/{package}/toggle', [\Jiny\Modules\Http\Controllers\ModuleController::class, 'toggle'])
+            ->name('modules.toggle');
+    });
+
+
 // 모듈에서 설정되 접속 prefix값을 읽어 옵니다.
 if(function_exists("admin_prefix")) {
     $prefix = admin_prefix();

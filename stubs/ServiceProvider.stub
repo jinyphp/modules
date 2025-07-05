@@ -1,0 +1,37 @@
+<?php
+
+namespace {{namespace}};
+
+use Illuminate\Support\ServiceProvider;
+
+class {{class}} extends ServiceProvider
+{
+    protected $package = '{{vendor}}.{{package}}';
+
+    public function register()
+    {
+        //
+    }
+
+    public function boot()
+    {
+        // 모듈: 라우트 설정
+        $this->loadRoutesFrom(__DIR__.'/routes/api.php');
+        $this->loadRoutesFrom(__DIR__.'/routes/web.php');
+        $this->loadRoutesFrom(__DIR__.'/routes/admin.php');
+
+        // 모듈: 뷰 설정
+        $this->loadViewsFrom(__DIR__.'/resources/views', $this->package);
+
+        // 모듈: 데이터베이스 마이그레이션
+        $this->loadMigrationsFrom(__DIR__.'/database/migrations');
+
+        // 모듈: 설정 파일
+        $this->publishes([
+            __DIR__.'/config' => config_path($this->package),
+        ], $this->package.'-config');
+
+        // 모듈: 언어 파일
+        $this->loadTranslationsFrom(__DIR__.'/resources/lang', $this->package);
+    }
+}

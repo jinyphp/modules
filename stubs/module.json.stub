@@ -1,0 +1,8 @@
+{
+  "name": "{{vendor}}/{{package}}",
+  "title": "패키지 한글명",
+  "version": "1.0.0",
+  "description": "설명",
+  "author": "",
+  "license": "MIT"
+}
