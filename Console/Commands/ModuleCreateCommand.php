@@ -45,6 +45,8 @@ class ModuleCreateCommand extends Command
 
         $this->createModuleStructure($vendor, $package, $modulePath);
         $this->createServiceProvider($vendor, $package, $modulePath);
+        $this->createHelpers($vendor, $package, $modulePath);
+        $this->createModuleJson($vendor, $package, $modulePath);
         $this->createReadme($vendor, $package, $modulePath);
 
         $this->info("Module {$vendor}/{$package} created successfully!");
@@ -142,6 +144,95 @@ PHP;
     }
 
     /**
+     * Helper 파일들을 생성합니다.
+     */
+    private function createHelpers(string $vendor, string $package, string $modulePath): void
+    {
+        // Helpers 디렉토리 생성
+        $helpersPath = $modulePath . '/Helpers';
+        File::makeDirectory($helpersPath, 0755, true);
+        $this->line("Created directory: Helpers");
+
+        // 기본 Helper.php 파일 생성
+        $this->createHelperFile($vendor, $package, $helpersPath);
+
+        // 루트 Helper.php 파일도 생성
+        $this->createRootHelperFile($vendor, $package, $modulePath);
+    }
+
+    /**
+     * Helpers 디렉토리의 Helper.php 파일을 생성합니다.
+     */
+    private function createHelperFile(string $vendor, string $package, string $helpersPath): void
+    {
+        $content = "<?php\n";
+
+        File::put($helpersPath . '/Helper.php', $content);
+        $this->line("Created Helper file: Helpers/Helper.php");
+    }
+
+    /**
+     * 루트 디렉토리의 Helper.php 파일을 생성합니다.
+     */
+    private function createRootHelperFile(string $vendor, string $package, string $modulePath): void
+    {
+        $content = "<?php\n";
+
+        File::put($modulePath . '/Helper.php', $content);
+        $this->line("Created Root Helper file: Helper.php");
+    }
+
+    /**
+     * module.json 파일을 생성합니다.
+     */
+    private function createModuleJson(string $vendor, string $package, string $modulePath): void
+    {
+        $moduleName = "{$vendor}/{$package}";
+        $vendorClass = ucfirst($vendor);
+        $packageClass = ucfirst($package);
+        $className = "{$vendorClass}{$packageClass}ServiceProvider";
+
+        $moduleData = [
+            'name' => $moduleName,
+            'vendor' => $vendor,
+            'package' => $package,
+            'version' => '1.0.0',
+            'description' => "{$vendorClass} {$packageClass} Module",
+            'author' => 'Your Name',
+            'email' => 'your.email@example.com',
+            'license' => 'MIT',
+            'homepage' => '',
+            'repository' => '',
+            'keywords' => ['laravel', 'module', $vendor, $package],
+            'require' => [
+                'php' => '>=8.0',
+                'laravel/framework' => '^10.0'
+            ],
+            'autoload' => [
+                'psr-4' => [
+                    "{$vendorClass}\\{$packageClass}\\" => ''
+                ]
+            ],
+            'extra' => [
+                'laravel' => [
+                    'providers' => [
+                        "{$vendorClass}\\{$packageClass}\\{$className}"
+                    ]
+                ]
+            ],
+            'config' => [
+                'enabled' => true,
+                'auto_load' => true,
+                'namespace' => "{$vendorClass}\\{$packageClass}"
+            ]
+        ];
+
+        $jsonContent = json_encode($moduleData, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+        File::put($modulePath . '/module.json', $jsonContent);
+        $this->line("Created module.json");
+    }
+
+    /**
      * README 파일을 생성합니다.
      */
     private function createReadme(string $vendor, string $package, string $modulePath): void
@@ -162,6 +253,8 @@ PHP;
 ```bash
 php artisan vendor:publish --tag={$vendor}-{$package}-config
 ```
+
+
 
 ## 사용법
 

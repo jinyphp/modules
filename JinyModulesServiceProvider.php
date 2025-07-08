@@ -5,6 +5,7 @@ namespace Jiny\Modules;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Blade;
+use Jiny\Modules\Services\ModuleHelper;
 
 class JinyModulesServiceProvider extends ServiceProvider
 {
@@ -15,6 +16,9 @@ class JinyModulesServiceProvider extends ServiceProvider
     {
         // 모듈 자동 로드 등록
         $this->registerModuleAutoLoader();
+
+        // Helper 파일 자동 로드 등록
+        $this->registerHelperAutoLoader();
     }
 
     /**
@@ -140,7 +144,37 @@ class JinyModulesServiceProvider extends ServiceProvider
                 \Jiny\Modules\Console\Commands\ModuleInfoCommand::class,
                 \Jiny\Modules\Console\Commands\ModuleMakeCommand::class,
                 \Jiny\Modules\Console\Commands\ModuleRemove::class,
+                \Jiny\Modules\Console\Commands\HelperListCommand::class,
             ]);
         }
+    }
+
+        /**
+     * Helper 파일 자동 로더를 등록합니다.
+     * 성능 최적화를 위해 캐싱과 지연 로딩을 적용합니다.
+     */
+    private function registerHelperAutoLoader(): void
+    {
+        // 모듈 헬퍼 함수들을 먼저 로드
+        require_once __DIR__ . '/Helpers/helpers.php';
+
+        // ModuleHelper를 사용하여 모든 Helper 파일들을 로드
+        ModuleHelper::loadAllHelpers();
+    }
+
+    /**
+     * Helper 파일들을 다시 스캔합니다 (캐시 클리어).
+     */
+    public function refreshHelperCache(): void
+    {
+        ModuleHelper::refreshHelpers();
+    }
+
+    /**
+     * 특정 모듈의 Helper 파일들을 로드합니다.
+     */
+    public function loadModuleHelpers(string $vendorName, string $packageName): void
+    {
+        ModuleHelper::loadModuleHelpers($vendorName, $packageName);
     }
 }

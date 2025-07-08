@@ -7,7 +7,7 @@
  * 모든 함수는 function_exists() 체크를 통해 중복 정의를 방지합니다.
  */
 
-use Jiny\Modules\Services\ModuleService;
+use Jiny\Modules\Services\ModuleHelper;
 
 if (!function_exists('jiny_modules_load_helpers')) {
     /**
@@ -15,7 +15,7 @@ if (!function_exists('jiny_modules_load_helpers')) {
      */
     function jiny_modules_load_helpers(): void
     {
-        ModuleService::loadAllHelpers();
+        ModuleHelper::loadAllHelpers();
     }
 }
 
@@ -28,7 +28,7 @@ if (!function_exists('jiny_modules_load_module_helpers')) {
      */
     function jiny_modules_load_module_helpers(string $vendorName, string $packageName): void
     {
-        ModuleService::loadModuleHelpers($vendorName, $packageName);
+        ModuleHelper::loadModuleHelpers($vendorName, $packageName);
     }
 }
 
@@ -38,7 +38,7 @@ if (!function_exists('jiny_modules_refresh_helpers')) {
      */
     function jiny_modules_refresh_helpers(): void
     {
-        ModuleService::refreshHelpers();
+        ModuleHelper::refreshHelpers();
     }
 }
 
@@ -48,7 +48,7 @@ if (!function_exists('jiny_modules_clear_cache')) {
      */
     function jiny_modules_clear_cache(): void
     {
-        ModuleService::clearHelperCache();
+        ModuleHelper::clearHelperCache();
     }
 }
 
@@ -60,7 +60,7 @@ if (!function_exists('jiny_modules_get_helpers')) {
      */
     function jiny_modules_get_helpers(): array
     {
-        return ModuleService::getRegisteredHelpers();
+        return ModuleHelper::getRegisteredHelpers();
     }
 }
 
@@ -74,7 +74,7 @@ if (!function_exists('jiny_modules_has_helpers')) {
      */
     function jiny_modules_has_helpers(string $vendorName, string $packageName): bool
     {
-        return ModuleService::hasHelpers($vendorName, $packageName);
+        return ModuleHelper::hasHelpers($vendorName, $packageName);
     }
 }
 
@@ -88,7 +88,7 @@ if (!function_exists('jiny_modules_get_module_helpers')) {
      */
     function jiny_modules_get_module_helpers(string $vendorName, string $packageName): array
     {
-        return ModuleService::getModuleHelpers($vendorName, $packageName);
+        return ModuleHelper::getModuleHelpers($vendorName, $packageName);
     }
 }
 
@@ -100,7 +100,7 @@ if (!function_exists('jiny_modules_discover_helpers')) {
      */
     function jiny_modules_discover_helpers(): array
     {
-        return ModuleService::discoverHelperFiles();
+        return ModuleHelper::discoverHelperFiles();
     }
 }
 
@@ -169,44 +169,3 @@ if (!function_exists('jiny_modules_list')) {
         return $modules;
     }
 }
-
-
-
-use Illuminate\Support\Facades\DB;
-use Nwidart\Modules\Facades\Module;
-
-
-if(!function_exists("is_module")) {
-    function is_module($code) {
-        // 대소문자 구분
-        return isModule($code);
-    }
-}
-
-if(!function_exists("isModule")) {
-    function isModule($code) {
-        if(Module::has($code)) {
-            return true;
-        }
-        return false;
-    }
-}
-
-if(!function_exists("moduleName")) {
-    function moduleName($code)
-    {
-        $temp = explode('-',$code);
-        $moduleName = "";
-
-        foreach($temp as $name) {
-            if(strlen($name) <=2) {
-                $moduleName .= strtoupper($name);
-            } else {
-                $moduleName .= ucfirst($name);
-            }
-
-        }
-        return $moduleName;
-    }
-}
-
